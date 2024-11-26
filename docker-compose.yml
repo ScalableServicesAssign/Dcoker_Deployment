@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container4
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: languagelearningapp2
+    ports:
+      - "3306:3306" # Expose MySQL on port 3306
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  java-app:
+    build:
+      context: .
+    container_name: ProfileManagementService
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/languagelearningapp2
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: rootpass
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+volumes:
+  db-data:
+
+networks:
+  app-network:
